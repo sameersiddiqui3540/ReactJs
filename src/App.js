@@ -1,39 +1,32 @@
 import './App.css';
-import React, {useEffect, useState} from 'react';
+import React, { useState, useEffect, useRef} from 'react';
 function App() {
-  const [resourceType, setResourceType] = useState('posts');
 
-  /*
-  This useEffect will run everytime our application renders (we click on any button).
-  useEffect takes an array as second parameter, and it will run 
-  whenever there is any change in any of the value of that array.
+  const [count,setCount] = useState(0);
 
-  If we pass [] as second parameter, it will act as mount function 
-  and it will only run on the first render.
-  */ 
+  let id = useRef();
 
-  // This will run only for the first time.
-  
-  // useEffect(() => {
-  //   console.log("Started!")
-  // },[resourceType])
-
-  // This will run whenever there is any change in the value of resourceType
-  useEffect(() => {
-    console.log("Started!")
-  },[resourceType])
-
-  return (
-    <div className="App">
+  const handleCount = () => {
+    id.current = setInterval(() => {
+      setCount((count) => count+1);
       
-      <button onClick={() => setResourceType('posts')}>Posts</button>
-      <button onClick={() => setResourceType('users')}>Users</button>
-      <button onClick={() => setResourceType('comments')}>Comments</button>
+    },1000);
+    
+  };
 
-      <h1>{resourceType}</h1>
-    </div>
+  useEffect(() => {
+    return () => clearInterval(id.current);
+  },[]);
 
-  );
+return <div className="App">
+      <h1>{count}</h1>
+      <button onClick={() => handleCount()}>Start</button>
+      <button onClick={() => clearInterval(id.current)}>Pause</button>
+      <button onClick={() => {
+        clearInterval(id.current);
+        setCount(0);
+      }}>Stop</button>
+  </div>
 }
 
 export default App;
